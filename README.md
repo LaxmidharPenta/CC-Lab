@@ -1,6 +1,6 @@
 Experiment 1: How do you launch an EC2 instance using the AWS Free Tier, configure security groups, and connect to it using SSH?
 
-Objective:
+Objective: 
 To learn how to launch and configure a virtual server using Amazon EC2, set up security groups, and connect to the instance using SSH.
 Outcome:
 Students will be able to launch an EC2 instance, configure its security settings, and establish a secure connection to the instance using SSH.
