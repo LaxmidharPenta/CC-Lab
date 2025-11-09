@@ -1,0 +1,376 @@
+1. Implementation of symmetric cipher algorithm (AES and RC4)
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import java.util.Base64;
+import java.util.Scanner;
+public class AES {
+    public static void main(String[] args) throws Exception {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter text to encrypt: ");
+        String msg= sc.nextLine();
+        SecretKey key = KeyGenerator.getInstance("AES").generateKey();
+        Cipher c = Cipher.getInstance("AES");
+        c.init(Cipher.ENCRYPT_MODE, key);
+        String encrypted = Base64.getEncoder().encodeToString(c.doFinal(msg.getBytes()));
+        System.out.println("Encrypted: " + encrypted);
+        c.init(Cipher.DECRYPT_MODE, key);
+        String decrypted = new String(c.doFinal(Base64.getDecoder().decode(encrypted)));
+        System.out.println("Decrypted: " + decrypted);
+    }
+}
+
+Enter text to encrypt: Hello
+Encrypted: /LaViOku048gWeYFeFTX5w==
+Decrypted: Hello
+
+
+
+2. Random number generation using a subset of digits and alphabets.
+import java.util.*;
+
+public class ranno {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter character set: ");
+        String chars = sc.nextLine();
+        System.out.print("Enter length: ");
+        int len = sc.nextInt();
+        Random rand = new Random();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < len; i++)
+            sb.append(chars.charAt(rand.nextInt(chars.length())));
+        System.out.println("Random String: " + sb);
+        sc.close();
+    }
+}
+
+Enter character set: AbS234
+Enter length: 6
+Random String: 3b4SSS
+
+
+3. Implementation of RSA based signature system
+package ISLab;
+import java.math.BigInteger;
+import java.util.Scanner;
+class RSA {
+    public static void main(String args[]) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter first prime number p: ");
+        int p = sc.nextInt();
+        System.out.print("Enter second prime number q: ");
+        int q = sc.nextInt();
+        System.out.print("Enter the message (number) to encrypt: ");
+        int msg = sc.nextInt();
+        int n = p * q;
+        int phi = (p - 1) * (q - 1);
+        int e = 0, d = 0;
+        System.out.println("n = " + n);
+        System.out.println("phi = " + phi);
+        for (int i = 2; i < phi; i++) {
+            if (gcd(i, phi) == 1) {
+                e = i;
+                break;
+            }
+        }
+        System.out.println("Public key (e) = " + e);
+        for (int i = 0; i < 10; i++) {
+            int x = 1 + (i * phi);
+            if (x % e == 0) {
+                d = x / e;
+                break;
+            }
+        }
+        System.out.println("Private key (d) = " + d);
+        BigInteger M = BigInteger.valueOf(msg);
+        BigInteger N = BigInteger.valueOf(n);
+        BigInteger E = BigInteger.valueOf(e);
+        BigInteger D = BigInteger.valueOf(d);
+        BigInteger C = M.modPow(E, N);
+        System.out.println("Encrypted message: " + C);
+        BigInteger decrypted = C.modPow(D, N);
+        System.out.println("Decrypted message: " + decrypted);
+    }
+    static int gcd(int a, int b) {
+        if (a == 0)
+            return b;
+        return gcd(b % a, a);
+    }
+}
+
+Enter first prime number p: 3
+Enter second prime number q: 5
+Enter the message (number) to encrypt: 7
+n = 15
+phi = 8
+Public key (e) = 3
+Private key (d) = 3
+Encrypted message: 13
+Decrypted message: 7
+
+
+4. Implementation of Subset sum
+import java.util.*;
+public class SubsetSum {
+    static boolean subsetSum(int[] a, int n, int sum) {
+        if (sum == 0) return true;
+        if (n == 0) return false;
+        return subsetSum(a, n - 1, sum) || subsetSum(a, n - 1, sum - a[n - 1]);
+    }
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter number of elements: ");
+        int n = sc.nextInt();
+        int a[] = new int[n];
+        System.out.println("Enter array elements:");
+        for (int i = 0; i < n; i++)
+            a[i] = sc.nextInt();
+        System.out.print("Enter the target sum: ");
+        int sum = sc.nextInt();
+        if (subsetSum(a, n, sum))
+            System.out.println("Subset with the given sum exists.");
+        else
+            System.out.println("No subset with the given sum.");
+    }
+}
+
+Enter number of elements: 3
+Enter array elements:
+3 3 6
+Enter the target sum: 9
+Subset with the given sum exists.
+
+
+
+5. Authenticating the given signature using the MD5 hash algorithm.
+import java.security.*;
+import java.util.Scanner;
+public class MD5{
+    public static void main(String[] args) throws Exception {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter data: ");
+        String data = sc.nextLine();
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        byte[] hash = md.digest(data.getBytes());
+        StringBuilder sb = new StringBuilder();
+        for (byte b : hash) sb.append(String.format("%02x", b));
+        System.out.println("Generated signature (MD5 hash): " + sb.toString());
+        sc.close();
+    }
+}
+//Output:
+nnrg@nnrg-HP-280-Pro-G6-Microtower-PC:~/1248$ gedit MD5.java
+nnrg@nnrg-HP-280-Pro-G6-Microtower-PC:~/1248$ javac MD5.java
+nnrg@nnrg-HP-280-Pro-G6-Microtower-PC:~/1248$ java MD5
+Enter Data: hello world
+Generated Signature: 5eb63bbbe01eeed093cb22bb8f5acdc3
+
+
+
+6. Implementation of Diffie-Hellman algorithm
+html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Diffie-Hellman Key Exchange</title>
+</head>
+<body>
+<script>
+function power(a, b, p) 
+{
+	if (b == 1)
+		return a;
+	else
+		return((Math.pow(a, b)) % p);
+}
+var P, G, x, a, y, b, ka, kb;
+P = parseInt(prompt("Enter a prime number P:"));
+document.write("The value of P: " + P + "<br>");
+G = parseInt(prompt("Enter a primitive root G:"));
+document.write("The value of G: " + G + "<br>");
+a = parseInt(prompt("Enter the private key for Alice (a):")); 
+document.write("The private key (a) for Alice: " + a + "<br>");
+x = power(G, a, P);
+b = parseInt(prompt("Enter the private key for Bob (b):")); 
+document.write("The private key (b) for Bob: " + b + "<br>");
+y = power(G, b, P); 
+ka = power(y, a, P); 
+kb = power(x, b, P);
+document.write("Secret key for Alice is: " + ka + "<br>");
+document.write("Secret key for Bob is: " + kb + "<br>");
+</script>
+</body>
+</html>
+
+css
+body{
+  padding: 25px;
+}
+.title {
+	color: #5C6AC4;
+}
+
+js
+function showTime() {
+	document.getElementById('currentTime').innerHTML = new Date().toUTCString();
+}
+showTime();
+setInterval(function () {
+	showTime();
+}, 1000);
+
+op:
+The value of P: 11
+The value of G: 2
+The private key (a) for Alice: 8
+The private key (b) for Bob: 3
+Secret key for Alice is: 5
+Secret key for Bob is: 5
+
+
+10. Implementation of Kerberos cryptosystem
+import javax.crypto.*;
+import java.util.*;
+public class kerberos {
+    public static void main(String[] args) throws Exception {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter your ID: ");
+        String id = sc.nextLine();
+        System.out.print("Enter your message: ");
+        String msg = sc.nextLine();
+        long t = System.currentTimeMillis() + 10000;
+        SecretKey key = KeyGenerator.getInstance("AES").generateKey();
+        Cipher c = Cipher.getInstance("AES");
+        c.init(Cipher.ENCRYPT_MODE, key);
+        byte[] enc = c.doFinal((id + ":" + t + ":" + msg).getBytes());
+        String ticket = Base64.getEncoder().encodeToString(enc);
+        System.out.println("\n[AS → Client] TGT and session key received. Ticket valid for 10 seconds.\n");
+        System.out.println("[TGS → Client] Service ticket and session key received. Ticket valid for 10 seconds.\n");
+        c.init(Cipher.DECRYPT_MODE, key);
+        String[] data = new String(c.doFinal(Base64.getDecoder().decode(ticket))).split(":");
+        if (data[0].equals(id) && System.currentTimeMillis() <= Long.parseLong(data[1])) {
+            System.out.println("[Service] User verified successfully! ID: " + data[0] + " (ticket valid)");
+            System.out.println("[Service] Message received: " + data[2]);
+        } else
+            System.out.println("[Service] Verification failed! Ticket expired or invalid.");
+    }
+}
+
+Enter your ID: IS
+Enter your message: ISLAB
+
+[AS → Client] TGT and session key received. Ticket valid for 10 seconds.
+
+[TGS → Client] Service ticket and session key received. Ticket valid for 10 seconds.
+
+[Service] User verified successfully! ID: IS (ticket valid)
+[Service] Message received: ISLAB
+
+
+
+11. Implementation of a trusted secure web transaction
+package ISLab;
+import java.net.http.*;
+import java.net.URI;
+public class SecureWebTrans {
+    public static void main(String[] args) throws Exception {
+        var client = HttpClient.newHttpClient();
+        var json = """
+            {
+              "title": "Secure Transaction",
+              "body": "Financial data payload",
+              "userId": 101
+            }
+        """;
+        var request = HttpRequest.newBuilder()
+                .uri(URI.create("https://jsonplaceholder.typicode.com/posts"))
+                .header("Content-Type", "application/json; charset=UTF-8")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+        var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        System.out.println("Response Code: " + response.statusCode());
+        System.out.println("Response: " + response.body());
+    }
+}
+
+Response Code: 201
+Response: {
+  "title": "Secure Transaction",
+  "body": "Financial data payload",
+  "userId": 101,
+  "id": 101
+}
+
+
+
+
+12. Digital Certificates and Hybrid (ASSY/SY) encryption, PKI
+import java.util.*;
+import javax.crypto.*;
+import java.util.Base64;
+public class HybridPKI {
+    public static void main(String[] a) throws Exception {
+        Scanner sc= new Scanner(System.in);
+        System.out.println("Enter a msg");
+        String msg =sc.nextLine();
+        SecretKey k = KeyGenerator.getInstance("AES").generateKey();
+        String encKey = Base64.getEncoder().encodeToString(k.getEncoded());
+        String ct = Base64.getEncoder().encodeToString(msg.getBytes());
+        String dec = new String(Base64.getDecoder().decode(ct));
+        System.out.println("Plain text : " + msg);
+        System.out.println("Encrypted AES Key : " + encKey);
+        System.out.println("Cipher text : " + ct);
+        System.out.println("Decrypted : " + dec);
+        System.out.println("Success : " + dec.equals(msg));
+    }
+}
+Output:
+Enter a msg
+This is PKI
+Plain text : This is PKI
+Encrypted AES Key : HRQo/Dh6qXtMv2TsN29VLv/cgmGtjCQ2W3u5qC+zCfo=
+Cipher text : VGhpcyBpcyBQS0k=
+Decrypted : This is PKI
+Success : true
+
+
+13. Message Authentication Codes.
+package ISLab;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import java.util.*;
+public class SHA256 {
+    static String hmac(String msg, String key) throws Exception {
+        var mac = Mac.getInstance("HmacSHA256");
+        mac.init(new SecretKeySpec(key.getBytes(), "HmacSHA256"));
+        return Base64.getEncoder().encodeToString(mac.doFinal(msg.getBytes()));
+    }
+    public static void main(String[] args) throws Exception {
+        var sc = new Scanner(System.in);
+        System.out.print("Enter message: ");
+        var msg = sc.nextLine();
+        System.out.print("Enter secret key: ");
+        var k1 = sc.nextLine();
+        var mac1 = hmac(msg, k1);
+        System.out.println("\n[Sender] MAC Address: " + mac1);
+        System.out.print("[Receiver] Enter secret key: ");
+        var k2 = sc.nextLine();
+        var mac2 = hmac(msg, k2);
+        System.out.println("[Receiver] MAC Address: " + mac2);
+        System.out.println("\nDo sender and receiver secret keys match? " + k1.equals(k2));
+        System.out.println(mac1.equals(mac2) ?
+                "MAC verification successful!" :
+                "MAC verification FAILED!");
+    }
+}
+
+Enter message: ISLAB
+Enter secret key: 1248
+
+[Sender] MAC Address: 6ik2h5OPHck4z+2y8N2x+/28tX3VPUI56Hh9lfzieL0=
+[Receiver] Enter secret key: 1248
+[Receiver] MAC Address: 6ik2h5OPHck4z+2y8N2x+/28tX3VPUI56Hh9lfzieL0=
+
+Do sender and receiver secret keys match? true
+MAC verification successful!
